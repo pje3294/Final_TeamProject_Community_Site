@@ -32,8 +32,6 @@ public class CrawlingTest {
 		String ex = null; // 입출력 예시
 		String writer = null; // 작성자
 
-
-
 		for (int i = 3; i < 9; i++) { // ★ url 뒷번호 대체할 숫자 for문으로 돌림 --> jsoup 사용으로 필요
 			try {
 
@@ -117,7 +115,7 @@ public class CrawlingTest {
 				System.out.println("\n=========================\n");
 
 			}
-			
+
 			CodingVO vo = new CodingVO();
 			CodingDAO dao = new CodingDAO();
 
@@ -130,8 +128,14 @@ public class CrawlingTest {
 			dao.insert(vo);
 			System.out.println(i + "번째 블로그 글  DB삽입완료");
 
-		}
+			// 1초 대기
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
+		}
 
 	}
 }
