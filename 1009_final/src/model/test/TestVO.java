@@ -17,7 +17,7 @@ import java.util.Date;
    constraint user_num_cons foreign key (user_num) references users(user_num) on delete cascade
  * */
 
-public class TestVO { //테스트 VO
+public class TestVO { // 테스트 VO
 	private int tId;
 	private int userNum;
 	private String tTitle;
@@ -29,6 +29,9 @@ public class TestVO { //테스트 VO
 	private int tHit;
 	private String tLang;
 	private int reCnt;
+	private int tTotal; // 별점 총점 (누적)
+	private int tSubmit; // 별점 제출수 => == 별점평가 참여자수
+	private double tRating; // 평점 == tTotal/tSubmit
 
 	public int gettId() {
 		return tId;
@@ -118,11 +121,36 @@ public class TestVO { //테스트 VO
 		this.reCnt = reCnt;
 	}
 
+	public int gettTotal() {
+		return tTotal;
+	}
+
+	public void settTotal(int tTotal) {
+		this.tTotal = tTotal;
+	}
+
+	public int gettSubmit() {
+		return tSubmit;
+	}
+
+	public void settSubmit(int tSubmit) {
+		this.tSubmit = tSubmit;
+	}
+
+	public double gettRating() {
+		return tRating;
+	}
+
+	public void settRating(double tRating) {
+		this.tRating = tRating;
+	}
+
 	@Override
 	public String toString() {
-		return "   TestVO [tId=" + tId + ", userNum=" + userNum + ", tTitle=" + tTitle + ", tContent=" + tContent
+		return "TestVO [tId=" + tId + ", userNum=" + userNum + ", tTitle=" + tTitle + ", tContent=" + tContent
 				+ ", tAnswer=" + tAnswer + ", tEx=" + tEx + ", tWriter=" + tWriter + ", tDate=" + tDate + ", tHit="
-				+ tHit + ", tLang=" + tLang + ", reCnt=" + reCnt + "]";
+				+ tHit + ", tLang=" + tLang + ", reCnt=" + reCnt + ", tTotal=" + tTotal + ", tSubmit=" + tSubmit
+				+ ", tRating=" + tRating + "]";
 	}
 
 }

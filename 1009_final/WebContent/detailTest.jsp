@@ -31,7 +31,8 @@
 <link rel="icon" type="image/png" sizes="96x96"
 	href="assets/img/favicon.jpg">
 <!-- Star -->
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/css/fontawesome-stars.css">
 </head>
 
@@ -52,7 +53,8 @@
 					<div class="panel panel-headline">
 						<div class="panel-heading">
 							<h4 class="text-left">
-								<span class="lnr lnr-home"></span>&nbsp;<a href="myPage.do?selUserNum=${test.userNum}&MyListCtgr=test">${test.tWriter}</a>
+								<span class="lnr lnr-home"></span>&nbsp;<a
+									href="myPage.do?selUserNum=${test.userNum}&myListCtgr=test">${test.tWriter}</a>
 							</h4>
 							<span class="panel-subtitle text-right">${test.tDate}</span>
 						</div>
@@ -65,7 +67,7 @@
 								<!-- 내용 -->
 								<textarea name="tContent" rows="6" class="form-control"
 									style="resize: none;" readonly>${test.tContent}
-									</textarea>
+                           </textarea>
 								<br>
 								<h4>출력 예시</h4>
 								<textarea name="tEx" rows="6" class="form-control"
@@ -87,9 +89,11 @@
 
 								</div>
 								<div class="input-group">
-									<input class="form-control" type="text" name="userAnswer" required>
+									<input class="form-control" type="text" name="userAnswer">
 									<span class="input-group-btn">
-									<button class="btn btn-primary" type="button" onclick="checkAnswer">댓글 작성</button></span>
+										<button class="btn btn-primary" type="button"
+											onclick="checkAnswer">정답 작성</button>
+									</span>
 								</div>
 								<input type="hidden" name="tTitle" value="${test.tTitle}">
 								<input type="hidden" name="tWriter" value="${test.tWriter}">
@@ -101,7 +105,7 @@
 							</form>
 						</div>
 						<!-- 게시물 END -->
-						
+
 						<!-- 댓글 -->
 						<div class="panel">
 							<div class="panel-heading">
@@ -163,12 +167,15 @@
 													<div class="panel-body panel-action-body">
 														<!-- 대댓글 작성 -->
 														<c:if test="${!empty user}">
-															<form method="post" action="insertTestReply.do" name="rreply">
-																<input type="hidden" name="userNum" value="${user.userNum}">
-																<input type="hidden" name="tId" value="${test.tId}">
-																<input type="hidden" name="rWriter" value="${user.id}">
-																<input type="hidden" name="parentId" value="${reply.rId}">
-																<input type="hidden" name="pageNum" value="${pageNum}">
+															<form method="post" action="insertTestReply.do"
+																name="rreply">
+																<input type="hidden" name="userNum"
+																	value="${user.userNum}"> <input type="hidden"
+																	name="tId" value="${test.tId}"> <input
+																	type="hidden" name="rWriter" value="${user.id}">
+																<input type="hidden" name="parentId"
+																	value="${reply.rId}"> <input type="hidden"
+																	name="pageNum" value="${pageNum}">
 																<div class="input-group">
 																	<input class="form-control" type="text" name="rContent"
 																		required> <span class="input-group-btn"><button
@@ -185,22 +192,29 @@
 																	<tr>
 																		<td>${rreply.rWriter}</td>
 																		<td><div class="panel-heading">
-																			<form method="post" action="updateReply.do" name="rreplyUp">
-																				<input type="text" class="form-reply" name="rContent" value="${rreply.rContent}" required readonly>
-																				<div class="right">
-																					<!-- 대댓글 수정 및 삭제 -->
-																					<c:if test="${rreply.rWriter == user.id}">
-																					<input type="hidden" name="pageNum" value="${pageNum}">
-																						<input type="hidden" name="rId" value="${rreply.rId}">
-																						<input type="hidden" name="tId" value="${test.tId}">
-																						<button type="button" class="btn-update">수정하기</button>
-																						<input type="submit" class="btn updateBtn" value="수정완료">
-																						<button type="button" onclick="rreplyDel()">삭제하기</button>
-																					</c:if>
-																					<!-- 대댓글 수정 및 삭제 END -->
-																				</div>
-																			</form>
-																		</div></td>
+																				<form method="post" action="updateReply.do"
+																					name="rreplyUp">
+																					<input type="text" class="form-reply"
+																						name="rContent" value="${rreply.rContent}"
+																						required readonly>
+																					<div class="right">
+																						<!-- 대댓글 수정 및 삭제 -->
+																						<c:if test="${rreply.rWriter == user.id}">
+																							<input type="hidden" name="pageNum"
+																								value="${pageNum}">
+																							<input type="hidden" name="rId"
+																								value="${rreply.rId}">
+																							<input type="hidden" name="tId"
+																								value="${test.tId}">
+																							<button type="button" class="btn-update">수정하기</button>
+																							<input type="submit" class="btn updateBtn"
+																								value="수정완료">
+																							<button type="button" onclick="rreplyDel()">삭제하기</button>
+																						</c:if>
+																						<!-- 대댓글 수정 및 삭제 END -->
+																					</div>
+																				</form>
+																			</div></td>
 																		<td><select class="example">
 																				<option value="1">1</option>
 																				<option value="2" selected>2</option>
@@ -247,27 +261,27 @@
 	<script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script src="assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="assets/scripts/klorofil-common.js"></script>
-	<script src="assets/scripts/jquery.barrating.min.js"></script> 
-	
+	<script src="assets/scripts/jquery.barrating.min.js"></script>
+
 	<script type="text/javascript">
-	function replyDel() {
-		result = confirm("댓글을 삭제하시겠습니까?");
-		if (result == true) {
-			document.replyUp.action = "deleteTestReply.do";
-			document.replyUp.submit();
-		} else {
-			return;
+		function replyDel() {
+			result = confirm("댓글을 삭제하시겠습니까?");
+			if (result == true) {
+				document.replyUp.action = "deleteTestReply.do";
+				document.replyUp.submit();
+			} else {
+				return;
+			}
 		}
-	}
-	function rreplyDel() {
-		result = confirm("대댓글을 삭제하시겠습니까?");
-		if (result == true) {
-			document.rreplyUp.action = "deleteTestReply.do";
-			document.rreplyUp.submit();
-		} else {
-			return;
+		function rreplyDel() {
+			result = confirm("대댓글을 삭제하시겠습니까?");
+			if (result == true) {
+				document.rreplyUp.action = "deleteTestReply.do";
+				document.rreplyUp.submit();
+			} else {
+				return;
+			}
 		}
-	}
 	</script>
 </body>
 

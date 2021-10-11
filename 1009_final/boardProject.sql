@@ -192,3 +192,26 @@ ALTER TABLE Test MODIFY (rating DEFAULT 0.0);
 
 update test set rating=5.3657 where tid=1;
 
+
+-----------------------------------------------------
+-- 누적별점 컬럼 추가 
+ALTER TABLE Test ADD (ttotal INT DEFAULT 0);
+-- 별점제출 컬럼 추가 
+ALTER TABLE Test ADD (tsubmit INT DEFAULT 0);
+-- 평점 컬럼 추가
+ALTER TABLE Test ADD (trating number DEFAULT 0);
+-----------------------------------------------------
+
+
+
+update test set trating= round(total/submit,2) where tid=1;
+
+-- 컬럼명 변경
+ALTER TABLE Test RENAME COLUMN total TO ttotal;
+ALTER TABLE Test RENAME COLUMN submit TO tsubmit;
+
+ALTER TABLE Test DROP COLUMN trating;
+
+
+
+
