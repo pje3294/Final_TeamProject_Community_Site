@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import model.common.JNDI;
 import model.users.UsersVO;
 
-public class TestDAO {
+public class TestDAO { 
 
 	static int pageSize = 3; // 페이징 관련 변수
 
@@ -20,7 +20,7 @@ public class TestDAO {
 	static String sql_UPDATE = "UPDATE test SET ttitle=?, tcontent=?, tanswer=?, tex=?, tlang=? WHERE tid=?";
 	static String sql_DELETE = "DELETE FROM test WHERE tid =?";
 
-	// --------------------------------------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------------------------------------	
 
 	// getDBList --> 검색기능까지 + 정렬(최신, 댓글, 조회순)
 	@SuppressWarnings("resource")
@@ -38,7 +38,8 @@ public class TestDAO {
 			if (uvo.getUserNum() > 0) {
 				if (pageOrder.equals("reply")) { // RE_CNT
 					sql = "SELECT * FROM (SELECT ROWNUM AS RNUM, test.* FROM (SELECT * FROM test "
-							+ "WHERE usernum=? AND ttitle LIKE '%" + content + "%' ORDER BY recnt DESC, tdate DESC) "
+							+ "WHERE usernum=? AND ttitle LIKE '%" + content
+							+ "%' ORDER BY recnt DESC, tdate DESC) "
 							+ "test WHERE ROWNUM <= ?) WHERE RNUM > ? ORDER BY recnt DESC";
 
 				} else if (pageOrder.equals("hit")) { // T_HIT
@@ -64,19 +65,22 @@ public class TestDAO {
 				if (pageOrder.equals("reply")) { // RE_CNT
 					System.out.println("댓글순");
 					sql = "SELECT * FROM (SELECT ROWNUM AS RNUM, test.* FROM (SELECT * FROM test "
-							+ "WHERE ttitle LIKE '%" + content + "%' ORDER BY recnt DESC, tdate DESC) "
-							+ "test WHERE ROWNUM <= ?) WHERE RNUM > ? ORDER BY recnt DESC";
+		                     + "WHERE ttitle LIKE '%" + content + "%' ORDER BY recnt DESC, tdate DESC) "
+		                     + "test WHERE ROWNUM <= ?) WHERE RNUM > ? ORDER BY recnt DESC";
+
+
 
 				} else if (pageOrder.equals("hit")) { // T_HIT
 					System.out.println("조회순");
 					sql = "SELECT * FROM (SELECT ROWNUM AS RNUM, test.* FROM (SELECT * FROM test "
-							+ "WHERE ttitle LIKE '%" + content + "%' ORDER BY thit DESC, tdate DESC) "
-							+ "test WHERE ROWNUM <= ?) WHERE RNUM > ? ORDER BY thit DESC";
+		                     + "WHERE ttitle LIKE '%" + content + "%' ORDER BY thit DESC, tdate DESC) "
+		                     + "test WHERE ROWNUM <= ?) WHERE RNUM > ? ORDER BY thit DESC";
 				} else {
 					System.out.println("최신순");
 					sql = "SELECT * FROM (SELECT ROWNUM AS RNUM, test.* FROM ("
-							+ "SELECT * FROM test WHERE ttitle LIKE '%" + content
-							+ "%' ORDER BY tdate DESC) test WHERE ROWNUM <= ?" + ") WHERE RNUM > ? ORDER BY tdate DESC";
+		                     + "SELECT * FROM test WHERE ttitle LIKE '%" + content
+		                     + "%' ORDER BY tdate DESC) test WHERE ROWNUM <= ?"
+		                     + ") WHERE RNUM > ? ORDER BY tdate DESC";
 				}
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setInt(1, (pageNum * pageSize) + pageSize);
@@ -100,9 +104,6 @@ public class TestDAO {
 				data.settHit(rs.getInt("thit"));
 				data.settLang(rs.getString("tlang"));
 				data.setReCnt(rs.getInt("recnt"));
-				data.settTotal(rs.getInt("ttotal"));
-				data.settSubmit(rs.getInt("tsubmit"));
-				data.settRating(rs.getDouble("trating"));
 				tlist.add(data);
 			}
 			rs.close();
@@ -117,11 +118,11 @@ public class TestDAO {
 				pstmt = conn.prepareStatement(sql);
 			}
 
-			ResultSet ttotal = pstmt.executeQuery();
-			if (ttotal.next()) {
-				cnt = ttotal.getInt(1);
+			ResultSet total = pstmt.executeQuery();
+			if (total.next()) {
+				cnt = total.getInt(1);
 			}
-			ttotal.close();
+			total.close();
 
 			datas.setTlist(tlist); // 게시글 모두
 			datas.setTestCnt(cnt); // 게시글 총 갯수
@@ -137,7 +138,7 @@ public class TestDAO {
 		return datas;
 
 	}
-	/////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////	
 
 	// getDBData --> 조회수 ++ (트랜잭션)
 	@SuppressWarnings("resource")
@@ -168,9 +169,6 @@ public class TestDAO {
 				data.settHit(rs.getInt("thit"));
 				data.settLang(rs.getString("tlang"));
 				data.setReCnt(rs.getInt("recnt"));
-				data.settTotal(rs.getInt("ttotal"));
-				data.settSubmit(rs.getInt("tsubmit"));
-				data.settRating(rs.getDouble("trating"));
 			}
 			if (!(data.getUserNum() == uvo.getUserNum())) {
 				// 내글이 아니면 -> 조회수 증가ooo ==> 트랜잭션을 이용
@@ -200,7 +198,7 @@ public class TestDAO {
 		}
 		return data;
 	}
-	/////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////	
 
 	public boolean insert(TestVO vo) {
 		Connection conn = JNDI.getConnection();
@@ -238,7 +236,6 @@ public class TestDAO {
 		PreparedStatement pstmt = null;
 
 		try {
-
 			pstmt = conn.prepareStatement(sql_UPDATE);
 			pstmt.setString(1, vo.gettTitle());
 			pstmt.setString(2, vo.gettContent());
@@ -278,46 +275,6 @@ public class TestDAO {
 		return res;
 	}
 
-	/////////////////////////////////////////////////////////////////////////
-
-	// 별점 관련 메서드 추가! 
-	@SuppressWarnings("resource")
-	public boolean rating(TestVO vo) {
-		Connection conn = JNDI.getConnection();
-		boolean res = false;
-		PreparedStatement pstmt = null;
-
-		// 별점 평가할때마다 ttotal(누적 별점) 증가 & 참여수 ++ 증가
-		String sql_rating1 = "UPDATE test SET ttotal=ttotal+?, tsubmit=tsubmit+1 WHERE tid=?"; 
-		// 평점도 업데이트 ==> 소수점 2자리까지 평균
-		String sql_rating2 = "UPDATE test SET trating= round(ttotal/tsubmit,2) WHERE tid=?";
-
-		try {
-			pstmt = conn.prepareStatement(sql_rating1);
-			pstmt.setInt(1, vo.gettTotal());
-			pstmt.setInt(2, vo.gettId());
-			pstmt.executeUpdate();
-
-			// 2초 대기 (rating1 실행후, rating2실행 되어야함)
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			pstmt = conn.prepareStatement(sql_rating2);
-			pstmt.setInt(1, vo.gettId());
-			pstmt.executeUpdate();
-			
-
-			res = true;
-		} catch (SQLException e) {
-			System.out.println("TestDAO-rating 오류 로깅");
-			e.printStackTrace();
-		} finally {
-			JNDI.disconnect(pstmt, conn);
-		}
-		return res;
-	}
+	/////////////////////////////////////////////////////////////////////////	
 
 }

@@ -1,8 +1,8 @@
-DROP TABLE users cascade constraint;
-DROP TABLE board cascade constraint;
-DROP TABLE boardreply cascade constraint;
-DROP TABLE test cascade constraint;
-DROP TABLE testreply cascade constraint;
+DROP TABLE users cascade constraint
+DROP TABLE board cascade constraint
+DROP TABLE boardreply cascade constraint
+DROP TABLE test cascade constraint
+DROP TABLE testreply cascade constraint
 
 SELECT * FROM users;
 SELECT * FROM board;
@@ -186,30 +186,9 @@ UPDATE BOARDREPLY SET RCONTENT='hellp tw' WHERE RID=1
 
 ALTER TABLE Test ADD(rating number); 
 
-SELECT * FROM test;
+select * from select(select rating=round(rating,2) from test where tid=1 ) test where tid=1;
 
 ALTER TABLE Test MODIFY (rating DEFAULT 0.0);
 
-update test set total=5 where tid=1;
-update test set submit=3 where tid=1;
- 
------------------------------------------------------
--- 누적별점 컬럼 추가 
-ALTER TABLE Test ADD (ttotal INT DEFAULT 0);
--- 별점제출 컬럼 추가 
-ALTER TABLE Test ADD (tsubmit INT DEFAULT 0);
--- 평점 컬럼 추가
-ALTER TABLE Test ADD (trating number DEFAULT 0);
------------------------------------------------------
-
-
-
-update test set trating= round(total/submit,2) where tid=1;
-
--- 컬럼명 변경
-ALTER TABLE Test RENAME COLUMN total TO ttotal;
-ALTER TABLE Test RENAME COLUMN submit TO tsubmit;
-
-ALTER TABLE Test DROP COLUMN trating;
-
+update test set rating=5.3657 where tid=1;
 
